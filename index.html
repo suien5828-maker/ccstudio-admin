@@ -433,20 +433,38 @@ function renderPicking() {
 function renderShipping() {
   const container = document.getElementById('shipping-list');
   if (!allCustomers.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
-  container.innerHTML = allCustomers.map(c => {
-    const items = getCustomerItems(c.id);
-    const total = calcTotal(c, items);
-    return `<div class="shipping-card" data-id="${c.id}">
+
+  // Group by nickname
+  const groups = {};
+  allCustomers.forEach(c => {
+    const key = c.nickname;
+    if (!groups[key]) groups[key] = { customers: [], items: [] };
+    groups[key].customers.push(c);
+    groups[key].items.push(...getCustomerItems(c.id));
+  });
+
+  const names = Object.keys(groups);
+  container.innerHTML = names.map(name => {
+    const { customers, items } = groups[name];
+    const totalQty = items.reduce((s, it) => s + it.qty, 0);
+    // Sum up shipping/extra from all customers in group
+    const totalShipping = customers.reduce((s, c) => s + (Number(c.shipping)||0), 0);
+    const totalExtra = customers.reduce((s, c) => s + (Number(c.extra)||0), 0);
+    const itemsTwd = items.reduce((s, it) => s + (it.rate ? it.price_jpy * it.rate * it.qty : 0), 0);
+    const grandTotal = itemsTwd + totalShipping + totalExtra;
+    const orderNos = customers.map(c => c.order_no).join('、');
+
+    return `<div class="shipping-card" data-name="${esc(name)}">
       <div class="shipping-header">
         <div style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" class="ship-check" data-id="${c.id}" style="width:18px;height:18px;accent-color:#E8A87C;cursor:pointer">
-          <div class="avatar">${esc(c.nickname.charAt(0))}</div>
+          <input type="checkbox" class="ship-check" data-name="${esc(name)}" style="width:18px;height:18px;accent-color:#E8A87C;cursor:pointer">
+          <div class="avatar">${esc(name.charAt(0))}</div>
           <div>
-            <div style="color:#fff;font-weight:700;font-size:15px">${esc(c.nickname)}</div>
-            <div style="color:#A0A0B8;font-size:11px">${esc(c.order_no)}</div>
+            <div style="color:#fff;font-weight:700;font-size:15px">${esc(name)}</div>
+            <div style="color:#A0A0B8;font-size:11px">${esc(orderNos)}</div>
           </div>
         </div>
-        <span style="color:#E8A87C;font-size:12px;font-weight:600">${items.reduce((s,it)=>s+it.qty,0)} 件</span>
+        <span style="color:#E8A87C;font-size:12px;font-weight:600">${totalQty} 件</span>
       </div>
       ${items.map((it, i) => {
         const twd = it.rate ? Math.round(it.price_jpy * it.rate * it.qty) : 0;
@@ -465,11 +483,12 @@ function renderShipping() {
         </div>`;
       }).join('')}
       <div class="shipping-footer">
-        ${Number(c.shipping)>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6B80;margin-bottom:4px"><span>運費</span><span>NT$${Number(c.shipping).toLocaleString()}</span></div>`:''}
-        ${Number(c.extra)>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6B80;margin-bottom:4px"><span>其他加價</span><span>NT$${Number(c.extra).toLocaleString()}</span></div>`:''}
+        ${itemsTwd>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6B80;margin-bottom:4px"><span>商品金額</span><span>NT$${Math.round(itemsTwd).toLocaleString()}</span></div>`:''}
+        ${totalShipping>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6B80;margin-bottom:4px"><span>運費</span><span>NT$${totalShipping.toLocaleString()}</span></div>`:''}
+        ${totalExtra>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6B80;margin-bottom:4px"><span>其他加價</span><span>NT$${totalExtra.toLocaleString()}</span></div>`:''}
         <div style="display:flex;justify-content:space-between;font-weight:700;font-size:16px;color:#1A1A2E;border-top:1px solid #E8E4DF;padding-top:10px;margin-top:6px">
           <span>應付總金額</span>
-          <span style="color:#E8A87C">NT$${Math.round(total).toLocaleString()}</span>
+          <span style="color:#E8A87C">NT$${Math.round(grandTotal).toLocaleString()}</span>
         </div>
       </div>
     </div>`;
@@ -484,10 +503,10 @@ function printPicking() {
 }
 
 function printShipping() {
-  const checked = [...document.querySelectorAll('.ship-check:checked')].map(cb => Number(cb.dataset.id));
+  const checked = [...document.querySelectorAll('.ship-check:checked')].map(cb => cb.dataset.name);
   if (!checked.length) { alert('請先勾選要列印的客人！'); return; }
   document.querySelectorAll('.shipping-card').forEach(card => {
-    card.style.display = checked.includes(Number(card.dataset.id)) ? 'block' : 'none';
+    card.style.display = checked.includes(card.dataset.name) ? 'block' : 'none';
   });
   document.body.classList.add('print-shipping');
   document.body.classList.remove('print-picking');
