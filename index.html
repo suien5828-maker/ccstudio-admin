@@ -323,6 +323,11 @@ function renderOrders() {
                 oninput="editingCustomer.extra = parseFloat(this.value)||0; rerenderTotal(${c.id})">
             </div>
             <div>
+              <div class="field-label">優惠折扣 NT$</div>
+              <input type="number" value="${editingCustomer.discount||''}" placeholder="0"
+                oninput="editingCustomer.discount = parseFloat(this.value)||0; rerenderTotal(${c.id})">
+            </div>
+            <div>
               <div class="field-label">備註</div>
               <input type="text" value="${esc(editingCustomer.note||'')}" placeholder="備註"
                 oninput="editingCustomer.note = this.value">
