@@ -161,7 +161,7 @@ function getCustomerItems(customerId) {
 
 function calcTotal(customer, items) {
   const itemsTotal = items.reduce((s, it) => s + (it.price_jpy * (it.rate||0) * it.qty), 0);
-  return itemsTotal + (Number(customer.shipping)||0) + (Number(customer.extra)||0);
+  return itemsTotal + (Number(customer.shipping)||0) + (Number(customer.extra)||0) - (Number(customer.discount)||0);
 }
 
 function getStatusOpt(status) {
@@ -172,7 +172,7 @@ function startEdit(customerId) {
   editingOrder = customerId;
   const c = allCustomers.find(c => c.id === customerId);
   const items = getCustomerItems(customerId);
-  editingCustomer = { shipping: c.shipping||0, extra: c.extra||0, note: c.note||'' };
+  editingCustomer = { shipping: c.shipping||0, extra: c.extra||0, discount: c.discount||0, note: c.note||'' };
   editingItems = {};
   items.forEach(it => {
     editingItems[it.id] = { rate: it.rate||0, status: it.status||'pending', vendor: it.vendor||'' };
@@ -195,6 +195,7 @@ async function saveEdit(customerId) {
   await sb.from('customers').update({
     shipping: editingCustomer.shipping,
     extra: editingCustomer.extra,
+    discount: editingCustomer.discount,
     note: editingCustomer.note,
   }).eq('id', customerId);
 
@@ -211,6 +212,7 @@ async function saveEdit(customerId) {
   if (cIdx !== -1) {
     allCustomers[cIdx].shipping = editingCustomer.shipping;
     allCustomers[cIdx].extra = editingCustomer.extra;
+    allCustomers[cIdx].discount = editingCustomer.discount;
     allCustomers[cIdx].note = editingCustomer.note;
   }
   for (const [itemId, data] of Object.entries(editingItems)) {
@@ -336,6 +338,10 @@ function renderOrders() {
               <div class="field-value">NT$${Number(c.extra||0).toLocaleString()}</div>
             </div>
             <div>
+              <div class="field-label">優惠折扣</div>
+              <div class="field-value">${Number(c.discount||0)>0?'- NT$'+Number(c.discount).toLocaleString():'-'}</div>
+            </div>
+            <div>
               <div class="field-label">備註</div>
               <div class="field-value">${esc(c.note||'-')}</div>
             </div>
@@ -450,8 +456,9 @@ function renderShipping() {
     // Sum up shipping/extra from all customers in group
     const totalShipping = customers.reduce((s, c) => s + (Number(c.shipping)||0), 0);
     const totalExtra = customers.reduce((s, c) => s + (Number(c.extra)||0), 0);
+    const totalDiscount = customers.reduce((s, c) => s + (Number(c.discount)||0), 0);
     const itemsTwd = items.reduce((s, it) => s + (it.rate ? it.price_jpy * it.rate * it.qty : 0), 0);
-    const grandTotal = itemsTwd + totalShipping + totalExtra;
+    const grandTotal = itemsTwd + totalShipping + totalExtra - totalDiscount;
     const orderNos = customers.map(c => c.order_no).join('、');
 
     return `<div class="shipping-card" data-name="${esc(name)}">
