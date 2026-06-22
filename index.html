@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CC 選物代購 - 工作人員後台</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #F5F3EF; font-family: 'PingFang TC','Noto Sans TC',sans-serif; min-height: 100vh; }
+.header { background: #1A1A2E; padding: 20px 24px; border-bottom: 3px solid #E8A87C; }
+.header-eyebrow { font-size: 10px; letter-spacing: 4px; color: #E8A87C; margin-bottom: 4px; }
+.header h1 { color: #fff; font-size: 22px; font-weight: 700; }
+.header p { color: #A0A0B8; font-size: 12px; margin-top: 4px; }
+.tabs { background: #1A1A2E; border-bottom: 1px solid #2E2E45; }
+.tabs-inner { max-width: 900px; margin: 0 auto; display: flex; }
+.tab-btn { background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; padding: 12px 18px; font-size: 13px; font-weight: 600; color: #A0A0B8; font-family: inherit; }
+.tab-btn.active { color: #E8A87C; border-bottom-color: #E8A87C; }
+.main { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+.card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #E8E4DF; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 14px; }
+.card-header { padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+.card-header:hover { background: #FAFAF8; }
+.order-no { font-weight: 700; color: #1A1A2E; font-size: 14px; }
+.order-meta { font-size: 12px; color: #6B6B80; margin-top: 3px; }
+.card-body { border-top: 1px solid #F0EDEA; }
+.item-row { padding: 14px 18px; border-bottom: 1px solid #F5F3EF; background: #FAFAF8; }
+.item-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #E0DCD8; flex-shrink: 0; }
+.no-thumb { width: 64px; height: 64px; background: #F0EDEA; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #CCC; flex-shrink: 0; }
+.item-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field-label { font-size: 11px; color: #6B6B80; margin-bottom: 4px; }
+input, select { width: 100%; border: 1.5px solid #DDD8D0; border-radius: 6px; padding: 8px 10px; font-size: 13px; color: #1A1A2E; background: #fff; outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: #E8A87C; }
+.order-footer-section { padding: 14px 18px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.total-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #F0EDEA; padding-top: 12px; }
+.btn-save { background: #1A1A2E; color: #E8A87C; border: none; border-radius: 7px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn-delete { background: transparent; border: 1px solid #E0BCBC; border-radius: 6px; color: #D64045; font-size: 12px; padding: 6px 12px; cursor: pointer; font-family: inherit; }
+.status-badge { display: inline-block; border-radius: 6px; padding: 3px 10px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+.badge { background: #E8A87C; color: #1A1A2E; border-radius: 20px; padding: 2px 10px; font-size: 12px; font-weight: 700; margin-left: 8px; }
+.picking-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #E8E4DF; margin-bottom: 14px; }
+.picking-header { background: #1A1A2E; padding: 12px 18px; display: flex; justify-content: space-between; }
+.picking-item { padding: 12px 18px; border-bottom: 1px solid #F0EDEA; display: flex; gap: 12px; align-items: center; }
+.picking-item:last-child { border-bottom: none; }
+.picking-item:nth-child(even) { background: #FAFAF8; }
+.qty-badge { background: #F5F3EF; border: 1.5px solid #E8A87C; border-radius: 8px; padding: 6px 12px; text-align: center; flex-shrink: 0; }
+.shipping-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #E8E4DF; margin-bottom: 16px; }
+.shipping-header { background: #1A1A2E; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; }
+.shipping-item { padding: 12px 18px; border-bottom: 1px solid #F0EDEA; display: flex; gap: 14px; align-items: center; }
+.shipping-footer { padding: 12px 18px; background: #FAFAF8; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: #E8A87C; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #1A1A2E; flex-shrink: 0; }
+.empty { text-align: center; color: #B0AAA4; font-size: 14px; padding: 48px 0; }
+.loading-text { text-align: center; color: #A0A0B8; font-size: 13px; padding: 32px 0; }
+.print-header { display: none; }
+@media print {
+  .header, .tabs, .card, .btn-save, .btn-delete, #orders-tab, #picking-tab { display: none !important; }
+  #shipping-tab { display: block !important; }
+  .shipping-top { display: none !important; }
+  .main { padding: 0; }
+  .print-header { display: block; text-align: center; padding: 16px 0 20px; border-bottom: 3px solid #E8A87C; margin-bottom: 20px; }
+  .print-header h2 { font-size: 22px; font-weight: 700; color: #1A1A2E; margin-bottom: 4px; }
+  .print-header p { font-size: 12px; color: #6B6B80; }
+  .shipping-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; margin-bottom: 16px; }
+  .shipping-header { background: #1A1A2E !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .shipping-footer { background: #FAFAF8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  input[type=checkbox] { display: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="max-width:900px;margin:0 auto">
+    <div class="header-eyebrow">工作人員後台</div>
+    <h1>CC 選物代購</h1>
+    <p>訂單管理系統</p>
+  </div>
+</div>
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('orders')">📋 訂單列表</button>
+    <button class="tab-btn" onclick="switchTab('picking')">📦 揀貨單</button>
+    <button class="tab-btn" onclick="switchTab('shipping')">🚚 出貨單</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- 訂單列表 -->
+  <div id="orders-tab">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-weight:700;color:#1A1A2E;font-size:15px">所有訂單<span class="badge" id="order-count">0</span></div>
+      <button class="btn-save" onclick="loadAll()">🔄 重新整理</button>
+    </div>
+    <div class="loading-text" id="loading-orders">載入中…</div>
+    <div id="orders-list"></div>
+  </div>
+
+  <!-- 揀貨單 -->
+  <div id="picking-tab" style="display:none">
+    <div style="font-weight:700;color:#1A1A2E;font-size:15px;margin-bottom:16px">揀貨單</div>
+    <div class="loading-text" id="loading-picking" style="display:none">載入中…</div>
+    <div id="picking-list"></div>
+  </div>
+
+  <!-- 出貨單 -->
+  <div id="shipping-tab" style="display:none">
+    <div class="print-header">
+      <h2>CC 選物代購</h2>
+      <p>出貨單</p>
+    </div>
+    <div class="shipping-top" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-weight:700;color:#1A1A2E;font-size:15px">出貨單</div>
+      <button class="btn-save" onclick="printShipping()">🖨 列印勾選</button>
+    </div>
+    <div id="shipping-list"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://zwabpiysvlqvqunauwyj.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3YWJwaXlzdmxxdnF1bmF1d3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMTA1MzgsImV4cCI6MjA5NzY4NjUzOH0.-jx1ikazqqKRta-8lEoifeKR9bVVm_E00m4e17q_6z8';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const STATUS_OPTIONS = [
+  { value:'pending', label:'處理中', color:'#A0A0B8', bg:'#F0F0F8' },
+  { value:'success', label:'採購成功', color:'#2E7D32', bg:'#E8F5E9' },
+  { value:'outofstock', label:'斷貨', color:'#D64045', bg:'#FFEBEE' },
+  { value:'shipped', label:'已出貨', color:'#1565C0', bg:'#E3F2FD' },
+];
+
+let allCustomers = [];
+let allItems = [];
+let expanded = null;
+
+async function loadAll() {
+  document.getElementById('loading-orders').style.display = 'block';
+  const { data: customers } = await sb.from('customers').select('*').order('created_at', { ascending: false });
+  const { data: items } = await sb.from('order_items').select('*').order('created_at', { ascending: true });
+  allCustomers = customers || [];
+  allItems = items || [];
+  document.getElementById('loading-orders').style.display = 'none';
+  document.getElementById('order-count').textContent = allCustomers.length;
+  renderOrders();
+  renderPicking();
+  renderShipping();
+}
+
+function getCustomerItems(customerId) {
+  return allItems.filter(it => it.customer_id === customerId);
+}
+
+function calcTotal(customer) {
+  const items = getCustomerItems(customer.id);
+  const itemsTotal = items.reduce((s, it) => s + (it.price_jpy * (it.rate||0) * it.qty), 0);
+  return itemsTotal + (Number(customer.shipping)||0) + (Number(customer.extra)||0);
+}
+
+function getStatusOpt(status) {
+  return STATUS_OPTIONS.find(s => s.value === status) || STATUS_OPTIONS[0];
+}
+
+function renderOrders() {
+  const container = document.getElementById('orders-list');
+  if (!allCustomers.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
+  container.innerHTML = allCustomers.map(c => {
+    const items = getCustomerItems(c.id);
+    const total = calcTotal(c);
+    const isOpen = expanded === c.id;
+    return `<div class="card">
+      <div class="card-header" onclick="toggleExpand(${c.id})">
+        <div>
+          <div class="order-no">${esc(c.order_no)}</div>
+          <div class="order-meta">${esc(c.nickname)}・${esc(c.phone)}・${c.created_at?.slice(0,16)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          ${total > 0 ? `<div style="font-weight:700;color:#E8A87C;font-size:14px">NT$${Math.round(total).toLocaleString()}</div>` : ''}
+          <div style="color:#A0A0B8;font-size:16px">${isOpen ? '▲' : '▼'}</div>
+        </div>
+      </div>
+      ${isOpen ? `<div class="card-body">
+        ${items.map(it => {
+          const twd = it.rate ? Math.round(it.price_jpy * it.rate * it.qty) : 0;
+          const sOpt = getStatusOpt(it.status);
+          return `<div class="item-row">
+            <div class="item-top">
+              ${it.image_url ? `<img src="${esc(it.image_url)}" class="thumb">` : '<div class="no-thumb">無圖</div>'}
+              <div style="flex:1">
+                <div style="font-weight:700;color:#1A1A2E;font-size:14px;margin-bottom:4px">${esc(it.name)}</div>
+                <div style="font-size:12px;color:#6B6B80">${it.size?esc(it.size)+'　':''}數量：${it.qty}　¥${(it.price_jpy||0).toLocaleString()}</div>
+                <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
+              </div>
+              ${twd > 0 ? `<div style="font-weight:700;color:#1A1A2E;font-size:14px;flex-shrink:0">NT$${twd.toLocaleString()}</div>` : ''}
+            </div>
+            <div class="item-grid">
+              <div>
+                <div class="field-label">匯率（¥1 = NT$?）</div>
+                <input type="number" step="0.01" value="${it.rate||''}" placeholder="如：0.22" onchange="updateItemField(${it.id}, 'rate', parseFloat(this.value)||0)">
+              </div>
+              <div>
+                <div class="field-label">商品狀態</div>
+                <select onchange="updateItemField(${it.id}, 'status', this.value)">
+                  ${STATUS_OPTIONS.map(s => `<option value="${s.value}" ${it.status===s.value?'selected':''}>${s.label}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+        <div class="order-footer-section">
+          <div class="footer-grid">
+            <div>
+              <div class="field-label">運費 NT$</div>
+              <input type="number" value="${c.shipping||''}" placeholder="0" onchange="updateCustomerField(${c.id}, 'shipping', this.value)">
+            </div>
+            <div>
+              <div class="field-label">其他加價 NT$</div>
+              <input type="number" value="${c.extra||''}" placeholder="0" onchange="updateCustomerField(${c.id}, 'extra', this.value)">
+            </div>
+            <div>
+              <div class="field-label">備註</div>
+              <input type="text" value="${esc(c.note||'')}" placeholder="備註" onchange="updateCustomerField(${c.id}, 'note', this.value)">
+            </div>
+          </div>
+          <div class="total-row">
+            <div style="font-weight:700;font-size:15px;color:#1A1A2E">
+              應付總金額：<span style="color:#E8A87C">NT$${Math.round(calcTotal(c)).toLocaleString()}</span>
+            </div>
+            <button class="btn-delete" onclick="deleteOrder(${c.id})">🗑 刪除訂單</button>
+          </div>
+        </div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleExpand(id) {
+  expanded = expanded === id ? null : id;
+  renderOrders();
+}
+
+async function updateItemField(itemId, field, value) {
+  await sb.from('order_items').update({ [field]: value }).eq('id', itemId);
+  const idx = allItems.findIndex(it => it.id === itemId);
+  if (idx !== -1) allItems[idx][field] = value;
+  renderOrders();
+  renderShipping();
+}
+
+async function updateCustomerField(customerId, field, value) {
+  await sb.from('customers').update({ [field]: value }).eq('id', customerId);
+  const idx = allCustomers.findIndex(c => c.id === customerId);
+  if (idx !== -1) allCustomers[idx][field] = value;
+  renderOrders();
+  renderShipping();
+}
+
+async function deleteOrder(customerId) {
+  const pwd = prompt('請輸入刪除密碼：');
+  if (pwd !== '888') { alert('密碼錯誤！'); return; }
+  await sb.from('customers').delete().eq('id', customerId);
+  allCustomers = allCustomers.filter(c => c.id !== customerId);
+  allItems = allItems.filter(it => it.customer_id !== customerId);
+  expanded = null;
+  renderOrders(); renderPicking(); renderShipping();
+}
+
+function renderPicking() {
+  const groups = {};
+  allItems.forEach(it => {
+    const vendor = it.name.split('-')[0] || '其他';
+    if (!groups[vendor]) groups[vendor] = [];
+    const c = allCustomers.find(c => c.id === it.customer_id);
+    groups[vendor].push({ ...it, nickname: c?.nickname || '', order_no: c?.order_no || '' });
+  });
+  const container = document.getElementById('picking-list');
+  const names = Object.keys(groups);
+  if (!names.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
+  container.innerHTML = names.map(vendor => {
+    const items = groups[vendor];
+    const totalQty = items.reduce((s, it) => s + it.qty, 0);
+    return `<div class="picking-card">
+      <div class="picking-header">
+        <span style="color:#fff;font-weight:700;font-size:15px">📍 ${esc(vendor)}</span>
+        <span style="color:#E8A87C;font-size:12px;font-weight:600">共 ${totalQty} 件</span>
+      </div>
+      ${items.map(it => {
+        const sOpt = getStatusOpt(it.status);
+        return `<div class="picking-item">
+          ${it.image_url ? `<img src="${esc(it.image_url)}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0">` : '<div style="width:64px;height:64px;background:#F0EDEA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#CCC;flex-shrink:0">無圖</div>'}
+          <div style="flex:1">
+            <div style="font-weight:600;color:#1A1A2E;font-size:14px">${esc(it.name.split('-').slice(1).join('-')||it.name)}</div>
+            <div style="font-size:12px;color:#6B6B80;margin-top:2px">${it.size?esc(it.size)+'　':''}${esc(it.nickname)}・${esc(it.order_no)}</div>
+            <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
+          </div>
+          <div class="qty-badge">
+            <div style="font-size:10px;color:#A0A0B8">數量</div>
+            <div style="font-weight:700;font-size:18px;color:#1A1A2E">${it.qty}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function renderShipping() {
+  const container = document.getElementById('shipping-list');
+  if (!allCustomers.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
+  container.innerHTML = allCustomers.map(c => {
+    const items = getCustomerItems(c.id);
+    const total = calcTotal(c);
+    return `<div class="shipping-card" data-id="${c.id}">
+      <div class="shipping-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" class="ship-check" data-id="${c.id}" style="width:18px;height:18px;accent-color:#E8A87C;cursor:pointer">
+          <div class="avatar">${esc(c.nickname.charAt(0))}</div>
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:15px">${esc(c.nickname)}</div>
+            <div style="color:#A0A0B8;font-size:11px">${esc(c.order_no)}</div>
+          </div>
+        </div>
+        <span style="color:#E8A87C;font-size:12px;font-weight:600">${items.reduce((s,it)=>s+it.qty,0)} 件</span>
+      </div>
+      ${items.map((it, i) => {
+        const twd = it.rate ? Math.round(it.price_jpy * it.rate * it.qty) : 0;
+        const sOpt = getStatusOpt(it.status);
+        return `<div class="shipping-item" style="background:${i%2===0?'#fff':'#FAFAF8'}">
+          ${it.image_url ? `<img src="${esc(it.image_url)}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0">` : '<div style="width:72px;height:72px;background:#F0EDEA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#CCC;flex-shrink:0">無圖</div>'}
+          <div style="flex:1">
+            <div style="font-weight:700;color:#1A1A2E;font-size:14px;margin-bottom:4px">${esc(it.name)}</div>
+            <div style="font-size:12px;color:#6B6B80">${it.size?esc(it.size)+'　':''}數量：${it.qty}</div>
+            <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
+          </div>
+          ${twd > 0 ? `<div style="font-weight:700;color:#1A1A2E;font-size:14px;flex-shrink:0">NT$${twd.toLocaleString()}</div>` : ''}
+        </div>`;
+      }).join('')}
+      <div class="shipping-footer">
+        ${Number(c.shipping)>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6B80;margin-bottom:4px"><span>運費</span><span>NT$${Number(c.shipping).toLocaleString()}</span></div>`:''}
+        ${Number(c.extra)>0?`<div style="display:flex;justify-content:space-between;font-size:13px;color:#6B6B80;margin-bottom:4px"><span>其他加價</span><span>NT$${Number(c.extra).toLocaleString()}</span></div>`:''}
+        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:16px;color:#1A1A2E;border-top:1px solid #E8E4DF;padding-top:10px;margin-top:6px">
+          <span>應付總金額</span>
+          <span style="color:#E8A87C">NT$${Math.round(total).toLocaleString()}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function printShipping() {
+  const checked = [...document.querySelectorAll('.ship-check:checked')].map(cb => Number(cb.dataset.id));
+  if (!checked.length) { alert('請先勾選要列印的客人！'); return; }
+  document.querySelectorAll('.shipping-card').forEach(card => {
+    card.style.display = checked.includes(Number(card.dataset.id)) ? 'block' : 'none';
+  });
+  window.print();
+  document.querySelectorAll('.shipping-card').forEach(card => card.style.display = '');
+}
+
+function switchTab(tab) {
+  ['orders','picking','shipping'].forEach(t => {
+    document.getElementById(t+'-tab').style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', ['orders','picking','shipping'][i] === tab);
+  });
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+loadAll();
+sb.channel('realtime-changes')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, loadAll)
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, loadAll)
+  .subscribe();
+</script>
+</body>
+</html>
