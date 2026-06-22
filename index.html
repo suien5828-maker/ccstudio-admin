@@ -160,7 +160,10 @@ function getCustomerItems(customerId) {
 }
 
 function calcTotal(customer, items) {
-  const itemsTotal = items.reduce((s, it) => s + (it.price_jpy * (it.rate||0) * it.qty), 0);
+  const itemsTotal = items.reduce((s, it) => {
+    const twd = (it.price_twd && it.price_twd > 0) ? it.price_twd : (it.price_jpy * (it.rate||0));
+    return s + twd * it.qty;
+  }, 0);
   return itemsTotal + (Number(customer.shipping)||0) + (Number(customer.extra)||0) - (Number(customer.discount)||0);
 }
 
@@ -175,7 +178,7 @@ function startEdit(customerId) {
   editingCustomer = { shipping: c.shipping||0, extra: c.extra||0, discount: c.discount||0, note: c.note||'' };
   editingItems = {};
   items.forEach(it => {
-    editingItems[it.id] = { rate: it.rate||0, status: it.status||'pending', vendor: it.vendor||'' };
+    editingItems[it.id] = { rate: it.rate||0, status: it.status||'pending', vendor: it.vendor||'', price_twd: it.price_twd||0 };
   });
   renderOrders();
 }
@@ -220,6 +223,7 @@ async function saveEdit(customerId) {
     if (iIdx !== -1) {
       allItems[iIdx].rate = data.rate;
       allItems[iIdx].status = data.status;
+      allItems[iIdx].price_twd = data.price_twd;
     }
   }
 
@@ -374,9 +378,10 @@ function renderOrders() {
 function rerenderTotal(customerId) {
   const c = allCustomers.find(c => c.id === customerId);
   const items = getCustomerItems(customerId);
+  const mergedItems = items.map(it => ({ ...it, ...(editingItems[it.id]||{}) }));
   const total = calcTotal(
     { ...c, ...editingCustomer },
-    items.map(it => ({ ...it, ...(editingItems[it.id]||{}) }))
+    mergedItems
   );
   const el = document.getElementById(`total-${customerId}`);
   if (el) el.textContent = `NT$${Math.round(total).toLocaleString()}`;
