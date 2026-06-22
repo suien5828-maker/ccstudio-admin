@@ -18,26 +18,29 @@ body { background: #F5F3EF; font-family: 'PingFang TC','Noto Sans TC',sans-serif
 .tab-btn.active { color: #E8A87C; border-bottom-color: #E8A87C; }
 .main { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
 .card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #E8E4DF; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 14px; }
-.card-header { padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+.card-header { padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
 .card-header:hover { background: #FAFAF8; }
-.order-no { font-weight: 700; color: #1A1A2E; font-size: 14px; }
-.order-meta { font-size: 12px; color: #6B6B80; margin-top: 3px; }
 .card-body { border-top: 1px solid #F0EDEA; }
 .item-row { padding: 14px 18px; border-bottom: 1px solid #F5F3EF; background: #FAFAF8; }
-.item-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.item-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
 .thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1px solid #E0DCD8; flex-shrink: 0; }
 .no-thumb { width: 64px; height: 64px; background: #F0EDEA; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #CCC; flex-shrink: 0; }
 .item-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .field-label { font-size: 11px; color: #6B6B80; margin-bottom: 4px; }
-input, select { width: 100%; border: 1.5px solid #DDD8D0; border-radius: 6px; padding: 8px 10px; font-size: 13px; color: #1A1A2E; background: #fff; outline: none; font-family: inherit; }
-input:focus, select:focus { border-color: #E8A87C; }
+.field-value { font-size: 13px; color: #1A1A2E; padding: 8px 0; border-bottom: 1px solid #F0EDEA; }
+input, select { width: 100%; border: 1.5px solid #E8A87C; border-radius: 6px; padding: 8px 10px; font-size: 13px; color: #1A1A2E; background: #FFFEF9; outline: none; font-family: inherit; }
 .order-footer-section { padding: 14px 18px; }
 .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-.total-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #F0EDEA; padding-top: 12px; }
+.total-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #F0EDEA; padding-top: 12px; margin-top: 4px; }
+.btn-edit { background: transparent; border: 1.5px solid #1A1A2E; border-radius: 7px; color: #1A1A2E; font-size: 12px; padding: 6px 14px; cursor: pointer; font-family: inherit; font-weight: 600; }
 .btn-save { background: #1A1A2E; color: #E8A87C; border: none; border-radius: 7px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn-cancel { background: transparent; color: #6B6B80; border: 1.5px solid #DDD8D0; border-radius: 7px; padding: 8px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
 .btn-delete { background: transparent; border: 1px solid #E0BCBC; border-radius: 6px; color: #D64045; font-size: 12px; padding: 6px 12px; cursor: pointer; font-family: inherit; }
-.status-badge { display: inline-block; border-radius: 6px; padding: 3px 10px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+.btn-refresh { background: #1A1A2E; color: #E8A87C; border: none; border-radius: 7px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.status-badge { display: inline-block; border-radius: 6px; padding: 3px 10px; font-size: 11px; font-weight: 600; }
 .badge { background: #E8A87C; color: #1A1A2E; border-radius: 20px; padding: 2px 10px; font-size: 12px; font-weight: 700; margin-left: 8px; }
+.edit-bar { display: flex; gap: 8px; align-items: center; padding: 10px 18px; background: #FEF9F4; border-top: 1px solid #F0EDEA; }
+.edit-notice { font-size: 12px; color: #8B6A3E; flex: 1; }
 .picking-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #E8E4DF; margin-bottom: 14px; }
 .picking-header { background: #1A1A2E; padding: 12px 18px; display: flex; justify-content: space-between; }
 .picking-item { padding: 12px 18px; border-bottom: 1px solid #F0EDEA; display: flex; gap: 12px; align-items: center; }
@@ -51,11 +54,16 @@ input:focus, select:focus { border-color: #E8A87C; }
 .avatar { width: 32px; height: 32px; border-radius: 50%; background: #E8A87C; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #1A1A2E; flex-shrink: 0; }
 .empty { text-align: center; color: #B0AAA4; font-size: 14px; padding: 48px 0; }
 .loading-text { text-align: center; color: #A0A0B8; font-size: 13px; padding: 32px 0; }
+.save-success { color: #2E7D32; font-size: 12px; }
 .print-header { display: none; }
 @media print {
-  .header, .tabs, .card, .btn-save, .btn-delete, #orders-tab, #picking-tab { display: none !important; }
-  #shipping-tab { display: block !important; }
-  .shipping-top { display: none !important; }
+  .header, .tabs, .card, .btn-save, .btn-delete, .btn-edit, .btn-cancel, .btn-refresh, #orders-tab { display: none !important; }
+  body.print-picking #shipping-tab, body.print-picking .shipping-top { display: none !important; }
+  body.print-picking #picking-tab { display: block !important; }
+  body.print-picking #picking-tab > div:first-child { display: none !important; }
+  body.print-shipping #picking-tab { display: none !important; }
+  body.print-shipping #shipping-tab { display: block !important; }
+  body.print-shipping .shipping-top { display: none !important; }
   .main { padding: 0; }
   .print-header { display: block; text-align: center; padding: 16px 0 20px; border-bottom: 3px solid #E8A87C; margin-bottom: 20px; }
   .print-header h2 { font-size: 22px; font-weight: 700; color: #1A1A2E; margin-bottom: 4px; }
@@ -84,24 +92,23 @@ input:focus, select:focus { border-color: #E8A87C; }
 </div>
 
 <div class="main">
-  <!-- 訂單列表 -->
   <div id="orders-tab">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-weight:700;color:#1A1A2E;font-size:15px">所有訂單<span class="badge" id="order-count">0</span></div>
-      <button class="btn-save" onclick="loadAll()">🔄 重新整理</button>
+      <button class="btn-refresh" onclick="loadAll()">🔄 重新整理</button>
     </div>
     <div class="loading-text" id="loading-orders">載入中…</div>
     <div id="orders-list"></div>
   </div>
 
-  <!-- 揀貨單 -->
   <div id="picking-tab" style="display:none">
-    <div style="font-weight:700;color:#1A1A2E;font-size:15px;margin-bottom:16px">揀貨單</div>
-    <div class="loading-text" id="loading-picking" style="display:none">載入中…</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-weight:700;color:#1A1A2E;font-size:15px">揀貨單</div>
+      <button class="btn-refresh" onclick="printPicking()">🖨 列印揀貨單</button>
+    </div>
     <div id="picking-list"></div>
   </div>
 
-  <!-- 出貨單 -->
   <div id="shipping-tab" style="display:none">
     <div class="print-header">
       <h2>CC 選物代購</h2>
@@ -109,7 +116,7 @@ input:focus, select:focus { border-color: #E8A87C; }
     </div>
     <div class="shipping-top" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-weight:700;color:#1A1A2E;font-size:15px">出貨單</div>
-      <button class="btn-save" onclick="printShipping()">🖨 列印勾選</button>
+      <button class="btn-refresh" onclick="printShipping()">🖨 列印勾選</button>
     </div>
     <div id="shipping-list"></div>
   </div>
@@ -130,6 +137,9 @@ const STATUS_OPTIONS = [
 let allCustomers = [];
 let allItems = [];
 let expanded = null;
+let editingOrder = null; // 哪個訂單在編輯中
+let editingItems = {}; // 暫存編輯中的 item 資料
+let editingCustomer = {}; // 暫存編輯中的 customer 資料
 
 async function loadAll() {
   document.getElementById('loading-orders').style.display = 'block';
@@ -137,6 +147,7 @@ async function loadAll() {
   const { data: items } = await sb.from('order_items').select('*').order('created_at', { ascending: true });
   allCustomers = customers || [];
   allItems = items || [];
+  editingOrder = null;
   document.getElementById('loading-orders').style.display = 'none';
   document.getElementById('order-count').textContent = allCustomers.length;
   renderOrders();
@@ -148,8 +159,7 @@ function getCustomerItems(customerId) {
   return allItems.filter(it => it.customer_id === customerId);
 }
 
-function calcTotal(customer) {
-  const items = getCustomerItems(customer.id);
+function calcTotal(customer, items) {
   const itemsTotal = items.reduce((s, it) => s + (it.price_jpy * (it.rate||0) * it.qty), 0);
   return itemsTotal + (Number(customer.shipping)||0) + (Number(customer.extra)||0);
 }
@@ -158,96 +168,62 @@ function getStatusOpt(status) {
   return STATUS_OPTIONS.find(s => s.value === status) || STATUS_OPTIONS[0];
 }
 
-function renderOrders() {
-  const container = document.getElementById('orders-list');
-  if (!allCustomers.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
-  container.innerHTML = allCustomers.map(c => {
-    const items = getCustomerItems(c.id);
-    const total = calcTotal(c);
-    const isOpen = expanded === c.id;
-    return `<div class="card">
-      <div class="card-header" onclick="toggleExpand(${c.id})">
-        <div>
-          <div class="order-no">${esc(c.order_no)}</div>
-          <div class="order-meta">${esc(c.nickname)}・${esc(c.phone)}・${c.created_at?.slice(0,16)}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          ${total > 0 ? `<div style="font-weight:700;color:#E8A87C;font-size:14px">NT$${Math.round(total).toLocaleString()}</div>` : ''}
-          <div style="color:#A0A0B8;font-size:16px">${isOpen ? '▲' : '▼'}</div>
-        </div>
-      </div>
-      ${isOpen ? `<div class="card-body">
-        ${items.map(it => {
-          const twd = it.rate ? Math.round(it.price_jpy * it.rate * it.qty) : 0;
-          const sOpt = getStatusOpt(it.status);
-          return `<div class="item-row">
-            <div class="item-top">
-              ${it.image_url ? `<img src="${esc(it.image_url)}" class="thumb">` : '<div class="no-thumb">無圖</div>'}
-              <div style="flex:1">
-                <div style="font-weight:700;color:#1A1A2E;font-size:14px;margin-bottom:4px">${esc(it.name)}</div>
-                <div style="font-size:12px;color:#6B6B80">${it.size?esc(it.size)+'　':''}數量：${it.qty}　¥${(it.price_jpy||0).toLocaleString()}</div>
-                <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
-              </div>
-              ${twd > 0 ? `<div style="font-weight:700;color:#1A1A2E;font-size:14px;flex-shrink:0">NT$${twd.toLocaleString()}</div>` : ''}
-            </div>
-            <div class="item-grid">
-              <div>
-                <div class="field-label">匯率（¥1 = NT$?）</div>
-                <input type="number" step="0.01" value="${it.rate||''}" placeholder="如：0.22" onchange="updateItemField(${it.id}, 'rate', parseFloat(this.value)||0)">
-              </div>
-              <div>
-                <div class="field-label">商品狀態</div>
-                <select onchange="updateItemField(${it.id}, 'status', this.value)">
-                  ${STATUS_OPTIONS.map(s => `<option value="${s.value}" ${it.status===s.value?'selected':''}>${s.label}</option>`).join('')}
-                </select>
-              </div>
-            </div>
-          </div>`;
-        }).join('')}
-        <div class="order-footer-section">
-          <div class="footer-grid">
-            <div>
-              <div class="field-label">運費 NT$</div>
-              <input type="number" value="${c.shipping||''}" placeholder="0" onchange="updateCustomerField(${c.id}, 'shipping', this.value)">
-            </div>
-            <div>
-              <div class="field-label">其他加價 NT$</div>
-              <input type="number" value="${c.extra||''}" placeholder="0" onchange="updateCustomerField(${c.id}, 'extra', this.value)">
-            </div>
-            <div>
-              <div class="field-label">備註</div>
-              <input type="text" value="${esc(c.note||'')}" placeholder="備註" onchange="updateCustomerField(${c.id}, 'note', this.value)">
-            </div>
-          </div>
-          <div class="total-row">
-            <div style="font-weight:700;font-size:15px;color:#1A1A2E">
-              應付總金額：<span style="color:#E8A87C">NT$${Math.round(calcTotal(c)).toLocaleString()}</span>
-            </div>
-            <button class="btn-delete" onclick="deleteOrder(${c.id})">🗑 刪除訂單</button>
-          </div>
-        </div>
-      </div>` : ''}
-    </div>`;
-  }).join('');
-}
-
-function toggleExpand(id) {
-  expanded = expanded === id ? null : id;
+function startEdit(customerId) {
+  editingOrder = customerId;
+  const c = allCustomers.find(c => c.id === customerId);
+  const items = getCustomerItems(customerId);
+  editingCustomer = { shipping: c.shipping||0, extra: c.extra||0, note: c.note||'' };
+  editingItems = {};
+  items.forEach(it => {
+    editingItems[it.id] = { rate: it.rate||0, status: it.status||'pending', vendor: it.vendor||'' };
+  });
   renderOrders();
 }
 
-async function updateItemField(itemId, field, value) {
-  await sb.from('order_items').update({ [field]: value }).eq('id', itemId);
-  const idx = allItems.findIndex(it => it.id === itemId);
-  if (idx !== -1) allItems[idx][field] = value;
+function cancelEdit() {
+  editingOrder = null;
+  editingItems = {};
+  editingCustomer = {};
   renderOrders();
-  renderShipping();
 }
 
-async function updateCustomerField(customerId, field, value) {
-  await sb.from('customers').update({ [field]: value }).eq('id', customerId);
-  const idx = allCustomers.findIndex(c => c.id === customerId);
-  if (idx !== -1) allCustomers[idx][field] = value;
+async function saveEdit(customerId) {
+  const btn = document.getElementById(`save-btn-${customerId}`);
+  if (btn) { btn.disabled = true; btn.textContent = '儲存中…'; }
+
+  // Save customer fields
+  await sb.from('customers').update({
+    shipping: editingCustomer.shipping,
+    extra: editingCustomer.extra,
+    note: editingCustomer.note,
+  }).eq('id', customerId);
+
+  // Save item fields
+  for (const [itemId, data] of Object.entries(editingItems)) {
+    await sb.from('order_items').update({
+      rate: data.rate,
+      status: data.status,
+    }).eq('id', Number(itemId));
+  }
+
+  // Update local data
+  const cIdx = allCustomers.findIndex(c => c.id === customerId);
+  if (cIdx !== -1) {
+    allCustomers[cIdx].shipping = editingCustomer.shipping;
+    allCustomers[cIdx].extra = editingCustomer.extra;
+    allCustomers[cIdx].note = editingCustomer.note;
+  }
+  for (const [itemId, data] of Object.entries(editingItems)) {
+    const iIdx = allItems.findIndex(it => it.id === Number(itemId));
+    if (iIdx !== -1) {
+      allItems[iIdx].rate = data.rate;
+      allItems[iIdx].status = data.status;
+    }
+  }
+
+  editingOrder = null;
+  editingItems = {};
+  editingCustomer = {};
   renderOrders();
   renderShipping();
 }
@@ -258,27 +234,178 @@ async function deleteOrder(customerId) {
   await sb.from('customers').delete().eq('id', customerId);
   allCustomers = allCustomers.filter(c => c.id !== customerId);
   allItems = allItems.filter(it => it.customer_id !== customerId);
-  expanded = null;
+  expanded = null; editingOrder = null;
   renderOrders(); renderPicking(); renderShipping();
 }
 
+function renderOrders() {
+  const container = document.getElementById('orders-list');
+  if (!allCustomers.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
+
+  container.innerHTML = allCustomers.map(c => {
+    const items = getCustomerItems(c.id);
+    const isOpen = expanded === c.id;
+    const isEditing = editingOrder === c.id;
+    const total = calcTotal(
+      isEditing ? { ...c, ...editingCustomer } : c,
+      isEditing ? items.map(it => ({ ...it, ...(editingItems[it.id]||{}) })) : items
+    );
+
+    return `<div class="card">
+      <div class="card-header" onclick="toggleExpand(${c.id})">
+        <div>
+          <div style="font-weight:700;color:#1A1A2E;font-size:14px">${esc(c.order_no)}</div>
+          <div style="font-size:12px;color:#6B6B80;margin-top:3px">${esc(c.nickname)}・${esc(c.phone)}・${c.created_at?.slice(0,16)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          ${total > 0 ? `<div style="font-weight:700;color:#E8A87C;font-size:14px">NT$${Math.round(total).toLocaleString()}</div>` : ''}
+          <div style="color:#A0A0B8;font-size:16px">${isOpen ? '▲' : '▼'}</div>
+        </div>
+      </div>
+
+      ${isOpen ? `<div class="card-body">
+        ${items.map(it => {
+          const editing = isEditing ? (editingItems[it.id] || {}) : {};
+          const rate = isEditing ? editing.rate : it.rate;
+          const status = isEditing ? editing.status : it.status;
+          const twd = rate ? Math.round(it.price_jpy * rate * it.qty) : 0;
+          const sOpt = getStatusOpt(status);
+          return `<div class="item-row">
+            <div class="item-top">
+              ${it.image_url ? `<img src="${esc(it.image_url)}" class="thumb">` : '<div class="no-thumb">無圖</div>'}
+              <div style="flex:1">
+                <div style="font-weight:700;color:#1A1A2E;font-size:14px;margin-bottom:4px">${esc(it.name)}</div>
+                <div style="font-size:12px;color:#6B6B80">${it.size?esc(it.size)+'　':''}數量：${it.qty}　¥${(it.price_jpy||0).toLocaleString()}</div>
+                <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
+              </div>
+              ${twd > 0 ? `<div style="font-weight:700;color:#1A1A2E;font-size:14px;flex-shrink:0">NT$${twd.toLocaleString()}</div>` : ''}
+            </div>
+            ${isEditing ? `
+            <div class="item-grid">
+              <div>
+                <div class="field-label">匯率（¥1 = NT$?）</div>
+                <input type="number" step="0.01" value="${rate||''}" placeholder="如：0.22"
+                  oninput="editingItems[${it.id}].rate = parseFloat(this.value)||0; rerenderTotal(${c.id})">
+              </div>
+              <div>
+                <div class="field-label">商品狀態</div>
+                <select onchange="editingItems[${it.id}].status = this.value; rerenderBadge(${it.id}, this.value)">
+                  ${STATUS_OPTIONS.map(s => `<option value="${s.value}" ${status===s.value?'selected':''}>${s.label}</option>`).join('')}
+                </select>
+              </div>
+            </div>` : `
+            <div class="item-grid">
+              <div>
+                <div class="field-label">匯率</div>
+                <div class="field-value">${it.rate ? `¥1 = NT$${it.rate}` : '未設定'}</div>
+              </div>
+              <div>
+                <div class="field-label">商品狀態</div>
+                <div class="field-value">${sOpt.label}</div>
+              </div>
+            </div>`}
+          </div>`;
+        }).join('')}
+
+        <div class="order-footer-section">
+          ${isEditing ? `
+          <div class="footer-grid">
+            <div>
+              <div class="field-label">運費 NT$</div>
+              <input type="number" value="${editingCustomer.shipping||''}" placeholder="0"
+                oninput="editingCustomer.shipping = parseFloat(this.value)||0; rerenderTotal(${c.id})">
+            </div>
+            <div>
+              <div class="field-label">其他加價 NT$</div>
+              <input type="number" value="${editingCustomer.extra||''}" placeholder="0"
+                oninput="editingCustomer.extra = parseFloat(this.value)||0; rerenderTotal(${c.id})">
+            </div>
+            <div>
+              <div class="field-label">備註</div>
+              <input type="text" value="${esc(editingCustomer.note||'')}" placeholder="備註"
+                oninput="editingCustomer.note = this.value">
+            </div>
+          </div>` : `
+          <div class="footer-grid">
+            <div>
+              <div class="field-label">運費</div>
+              <div class="field-value">NT$${Number(c.shipping||0).toLocaleString()}</div>
+            </div>
+            <div>
+              <div class="field-label">其他加價</div>
+              <div class="field-value">NT$${Number(c.extra||0).toLocaleString()}</div>
+            </div>
+            <div>
+              <div class="field-label">備註</div>
+              <div class="field-value">${esc(c.note||'-')}</div>
+            </div>
+          </div>`}
+
+          <div class="total-row">
+            <div style="font-weight:700;font-size:15px;color:#1A1A2E">
+              應付總金額：<span style="color:#E8A87C" id="total-${c.id}">NT$${Math.round(total).toLocaleString()}</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              ${isEditing
+                ? `<button class="btn-cancel" onclick="cancelEdit()">取消</button>
+                   <button class="btn-save" id="save-btn-${c.id}" onclick="saveEdit(${c.id})">💾 儲存</button>`
+                : `<button class="btn-delete" onclick="deleteOrder(${c.id})">🗑 刪除</button>
+                   <button class="btn-edit" onclick="startEdit(${c.id})">✏️ 修改</button>`
+              }
+            </div>
+          </div>
+        </div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function rerenderTotal(customerId) {
+  const c = allCustomers.find(c => c.id === customerId);
+  const items = getCustomerItems(customerId);
+  const total = calcTotal(
+    { ...c, ...editingCustomer },
+    items.map(it => ({ ...it, ...(editingItems[it.id]||{}) }))
+  );
+  const el = document.getElementById(`total-${customerId}`);
+  if (el) el.textContent = `NT$${Math.round(total).toLocaleString()}`;
+}
+
+function rerenderBadge(itemId, status) {
+  // badge updates via status-badge span if needed
+}
+
+function toggleExpand(id) {
+  if (editingOrder === id) return; // 編輯中不能收起
+  expanded = expanded === id ? null : id;
+  if (expanded === id && editingOrder !== id) editingOrder = null;
+  renderOrders();
+}
+
 function renderPicking() {
+  // Group by customer (nickname)
   const groups = {};
   allItems.forEach(it => {
-    const vendor = it.name.split('-')[0] || '其他';
-    if (!groups[vendor]) groups[vendor] = [];
     const c = allCustomers.find(c => c.id === it.customer_id);
-    groups[vendor].push({ ...it, nickname: c?.nickname || '', order_no: c?.order_no || '' });
+    const key = c?.nickname || '未知';
+    if (!groups[key]) groups[key] = { customer: c, items: [] };
+    groups[key].items.push(it);
   });
   const container = document.getElementById('picking-list');
   const names = Object.keys(groups);
   if (!names.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
-  container.innerHTML = names.map(vendor => {
-    const items = groups[vendor];
+  container.innerHTML = names.map(name => {
+    const { customer: c, items } = groups[name];
     const totalQty = items.reduce((s, it) => s + it.qty, 0);
     return `<div class="picking-card">
       <div class="picking-header">
-        <span style="color:#fff;font-weight:700;font-size:15px">📍 ${esc(vendor)}</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:32px;height:32px;border-radius:50%;background:#E8A87C;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#1A1A2E">${esc(name.charAt(0).toUpperCase())}</div>
+          <div>
+            <span style="color:#fff;font-weight:700;font-size:15px">${esc(name)}</span>
+            <div style="color:#A0A0B8;font-size:11px;margin-top:2px">${esc(c?.order_no||'')}　${c?.created_at?.slice(0,10)||''}</div>
+          </div>
+        </div>
         <span style="color:#E8A87C;font-size:12px;font-weight:600">共 ${totalQty} 件</span>
       </div>
       ${items.map(it => {
@@ -286,8 +413,11 @@ function renderPicking() {
         return `<div class="picking-item">
           ${it.image_url ? `<img src="${esc(it.image_url)}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0">` : '<div style="width:64px;height:64px;background:#F0EDEA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#CCC;flex-shrink:0">無圖</div>'}
           <div style="flex:1">
-            <div style="font-weight:600;color:#1A1A2E;font-size:14px">${esc(it.name.split('-').slice(1).join('-')||it.name)}</div>
-            <div style="font-size:12px;color:#6B6B80;margin-top:2px">${it.size?esc(it.size)+'　':''}${esc(it.nickname)}・${esc(it.order_no)}</div>
+            <div style="font-weight:600;color:#1A1A2E;font-size:14px">${esc(it.name)}</div>
+            <div style="font-size:12px;color:#6B6B80;margin-top:2px">
+              ${it.size?esc(it.size)+'　':''}數量：${it.qty}
+              ${it.vendor?`　廠商：<b>${esc(it.vendor)}</b>`:''}
+            </div>
             <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
           </div>
           <div class="qty-badge">
@@ -305,7 +435,7 @@ function renderShipping() {
   if (!allCustomers.length) { container.innerHTML = '<div class="empty">尚無訂單</div>'; return; }
   container.innerHTML = allCustomers.map(c => {
     const items = getCustomerItems(c.id);
-    const total = calcTotal(c);
+    const total = calcTotal(c, items);
     return `<div class="shipping-card" data-id="${c.id}">
       <div class="shipping-header">
         <div style="display:flex;align-items:center;gap:10px">
@@ -325,7 +455,10 @@ function renderShipping() {
           ${it.image_url ? `<img src="${esc(it.image_url)}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0">` : '<div style="width:72px;height:72px;background:#F0EDEA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#CCC;flex-shrink:0">無圖</div>'}
           <div style="flex:1">
             <div style="font-weight:700;color:#1A1A2E;font-size:14px;margin-bottom:4px">${esc(it.name)}</div>
-            <div style="font-size:12px;color:#6B6B80">${it.size?esc(it.size)+'　':''}數量：${it.qty}</div>
+            <div style="font-size:12px;color:#6B6B80">
+              ${it.size?esc(it.size)+'　':''}數量：${it.qty}
+              ${it.vendor?`　廠商：${esc(it.vendor)}`:''}
+            </div>
             <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
           </div>
           ${twd > 0 ? `<div style="font-weight:700;color:#1A1A2E;font-size:14px;flex-shrink:0">NT$${twd.toLocaleString()}</div>` : ''}
@@ -343,13 +476,23 @@ function renderShipping() {
   }).join('');
 }
 
+function printPicking() {
+  document.body.classList.add('print-picking');
+  document.body.classList.remove('print-shipping');
+  window.print();
+  document.body.classList.remove('print-picking');
+}
+
 function printShipping() {
   const checked = [...document.querySelectorAll('.ship-check:checked')].map(cb => Number(cb.dataset.id));
   if (!checked.length) { alert('請先勾選要列印的客人！'); return; }
   document.querySelectorAll('.shipping-card').forEach(card => {
     card.style.display = checked.includes(Number(card.dataset.id)) ? 'block' : 'none';
   });
+  document.body.classList.add('print-shipping');
+  document.body.classList.remove('print-picking');
   window.print();
+  document.body.classList.remove('print-shipping');
   document.querySelectorAll('.shipping-card').forEach(card => card.style.display = '');
 }
 
@@ -369,8 +512,8 @@ function esc(str) {
 
 loadAll();
 sb.channel('realtime-changes')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, loadAll)
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, loadAll)
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, () => { if (!editingOrder) loadAll(); })
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, () => { if (!editingOrder) loadAll(); })
   .subscribe();
 </script>
 </body>
