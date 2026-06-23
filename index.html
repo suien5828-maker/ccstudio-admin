@@ -131,7 +131,8 @@ const STATUS_OPTIONS = [
   { value:'pending', label:'處理中', color:'#A0A0B8', bg:'#F0F0F8' },
   { value:'success', label:'採購成功', color:'#2E7D32', bg:'#E8F5E9' },
   { value:'outofstock', label:'斷貨', color:'#D64045', bg:'#FFEBEE' },
-  { value:'shipped', label:'已出貨', color:'#1565C0', bg:'#E3F2FD' },
+  { value:'preparing', label:'出貨準備中', color:'#E65100', bg:'#FFF3E0' },
+  { value:'done', label:'已完成', color:'#1565C0', bg:'#E3F2FD' },
 ];
 
 let allCustomers = [];
@@ -161,6 +162,7 @@ function getCustomerItems(customerId) {
 
 function calcTotal(customer, items) {
   const itemsTotal = items.reduce((s, it) => {
+    if (it.status === 'outofstock') return s; // 斷貨不計入
     const twd = (it.price_twd && it.price_twd > 0) ? it.price_twd : (it.price_jpy * (it.rate||0));
     return s + twd * it.qty;
   }, 0);
@@ -467,7 +469,11 @@ function renderShipping() {
     const totalShipping = customers.reduce((s, c) => s + (Number(c.shipping)||0), 0);
     const totalExtra = customers.reduce((s, c) => s + (Number(c.extra)||0), 0);
     const totalDiscount = customers.reduce((s, c) => s + (Number(c.discount)||0), 0);
-    const itemsTwd = items.reduce((s, it) => s + (it.rate ? it.price_jpy * it.rate * it.qty : 0), 0);
+    const itemsTwd = items.reduce((s, it) => {
+      if (it.status === 'outofstock') return s;
+      const twd = (it.price_twd && it.price_twd > 0) ? it.price_twd : (it.rate ? it.price_jpy * it.rate : 0);
+      return s + twd * it.qty;
+    }, 0);
     const grandTotal = itemsTwd + totalShipping + totalExtra - totalDiscount;
     const orderNos = customers.map(c => c.order_no).join('、');
 
@@ -489,14 +495,14 @@ function renderShipping() {
         return `<div class="shipping-item" style="background:${i%2===0?'#fff':'#FAFAF8'}">
           ${it.image_url ? `<img src="${esc(it.image_url)}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0">` : '<div style="width:72px;height:72px;background:#F0EDEA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#CCC;flex-shrink:0">無圖</div>'}
           <div style="flex:1">
-            <div style="font-weight:700;color:#1A1A2E;font-size:14px;margin-bottom:4px">${esc(it.name)}</div>
+            <div style="font-weight:700;color:${it.status==='outofstock'?'#D64045':'#1A1A2E'};font-size:14px;margin-bottom:4px">${esc(it.name)}${it.status==='outofstock'?' （斷貨）':''}</div>
             <div style="font-size:12px;color:#6B6B80">
               ${it.size?esc(it.size)+'　':''}數量：${it.qty}
               ${it.vendor?`　廠商：${esc(it.vendor)}`:''}
             </div>
             <span class="status-badge" style="background:${sOpt.bg};color:${sOpt.color}">${sOpt.label}</span>
           </div>
-          ${twd > 0 ? `<div style="font-weight:700;color:#1A1A2E;font-size:14px;flex-shrink:0">NT$${twd.toLocaleString()}</div>` : ''}
+          ${it.status==='outofstock' ? '<div style="color:#D64045;font-size:13px;font-weight:600;flex-shrink:0">不計費</div>' : twd > 0 ? `<div style="font-weight:700;color:#1A1A2E;font-size:14px;flex-shrink:0">NT$${twd.toLocaleString()}</div>` : ''}
         </div>`;
       }).join('')}
       <div class="shipping-footer">
