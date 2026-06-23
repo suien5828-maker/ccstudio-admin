@@ -291,18 +291,27 @@ function renderOrders() {
             ${isEditing ? `
             <div class="item-grid">
               <div>
+                <div class="field-label">台幣售價（直接填）</div>
+                <input type="number" value="${editingItems[it.id]?.price_twd||it.price_twd||''}" placeholder="客人填或直接輸入"
+                  oninput="editingItems[${it.id}].price_twd = parseFloat(this.value)||0; rerenderTotal(${c.id})">
+              </div>
+              <div>
                 <div class="field-label">匯率（¥1 = NT$?）</div>
                 <input type="number" step="0.01" value="${rate||''}" placeholder="如：0.22"
                   oninput="editingItems[${it.id}].rate = parseFloat(this.value)||0; rerenderTotal(${c.id})">
               </div>
               <div>
                 <div class="field-label">商品狀態</div>
-                <select onchange="editingItems[${it.id}].status = this.value; rerenderBadge(${it.id}, this.value)">
+                <select onchange="editingItems[${it.id}].status = this.value">
                   ${STATUS_OPTIONS.map(s => `<option value="${s.value}" ${status===s.value?'selected':''}>${s.label}</option>`).join('')}
                 </select>
               </div>
             </div>` : `
             <div class="item-grid">
+              <div>
+                <div class="field-label">台幣售價</div>
+                <div class="field-value">${it.price_twd > 0 ? 'NT$'+Number(it.price_twd).toLocaleString() : '未設定'}</div>
+              </div>
               <div>
                 <div class="field-label">匯率</div>
                 <div class="field-value">${it.rate ? `¥1 = NT$${it.rate}` : '未設定'}</div>
